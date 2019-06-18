@@ -1,7 +1,7 @@
 import React from 'react';
 import './ImageURL.css';
 
-const ImageURL = () => {
+const ImageURL = ({ oninputChange, onSubmit }) => {
     return(
         <div>
             <p className="f3">
@@ -9,8 +9,11 @@ const ImageURL = () => {
             </p>
             <div className="center">
                 <div className="pa4 center br3 shadow-5 form">
-                    <input className="f4 pa2 w-70 center" type="text"/>
-                    <button className="w-30 no-underline grow f4 link ph3 pv2 dib white bg-black">Submit</button>
+                    <input id='inputImage' className="f4 pa2 w-70 center" type="text" onChange={oninputChange}/>
+                    <button 
+                        className="w-30 no-underline grow f4 link ph3 pv2 dib white bg-black" 
+                        onClick={onSubmit}>Submit
+                    </button>
                 </div>
             </div>
         </div>
