@@ -6,6 +6,8 @@ import Logo from './componentas/Logo/Logo';
 import ImageURL from './componentas/ImageURL/ImageURL';
 import Rank from './componentas/Rank/Rank';
 import ImageWithFace from './componentas/ImageWithFace/ImageWithFace';
+import Register from './componentas/Register/Register';
+import SignIn from './componentas/SignIn/SignIn';
 import Particles from 'react-particles-js';
 import 'tachyons';
 
@@ -35,6 +37,7 @@ class App extends Component {
       input: '',
       ImageWithFace: '',
       box: {},
+      route: 'signin',
     }
   }
 
@@ -57,7 +60,6 @@ class App extends Component {
   }
 
   displayFaceBox = (box) =>{
-    console.log(box);
     this.setState({box: box});
   }
 
@@ -72,17 +74,30 @@ class App extends Component {
 
   }
 
+  onRouteChange = (route) => {
+    this.setState({route: route});
+  }
+
   render() {
     return (
       <div className="App">
         <Particles className="backgroundMove"
           params={particlesOption}
         />
-        <Navigation />
-        <Logo />
-        <Rank/>
-        <ImageURL oninputChange={this.oninputChange} onSubmit={this.onSubmit} />
-        <ImageWithFace box={this.state.box} ImageWithFace={this.state.ImageWithFace}/>
+        <Navigation onRouteChange={this.onRouteChange}/>
+        { this.state.route === 'home'
+          ? <div>
+            <Logo />
+            <Rank/>
+            <ImageURL oninputChange={this.oninputChange} onSubmit={this.onSubmit} />
+            <ImageWithFace box={this.state.box} ImageWithFace={this.state.ImageWithFace}/>
+          </div>
+          :(
+            this.state.route === 'signin'
+            ? <SignIn onRouteChange={this.onRouteChange} />
+            : <Register onRouteChange={this.onRouteChange} />
+          )
+        }
       </div>
     );
   }
