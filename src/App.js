@@ -38,7 +38,33 @@ class App extends Component {
       ImageWithFace: '',
       box: {},
       route: 'signin',
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        imageInput: 0,
+        joined: ''
+      }
     }
+  }
+
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        imageInput: data.imageInput,
+        joined: data.joined,
+      }
+    })
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3001')
+      .then(response => response.json())
+      //.then(console.log);
   }
 
   oninputChange = (event) => {
@@ -69,12 +95,32 @@ class App extends Component {
       .predict(
         Clarifai.FACE_DETECT_MODEL, 
         this.state.input)
-      .then(response => this.displayFaceBox(this.faceLocation(response)))
+      .then(response => {
+        if(response){
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id: this.state.user.id
+            })
+        })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {imageInput: count}))
+          })
+        }
+        this.displayFaceBox(this.faceLocation(response))
+      })
       .catch(err => console.log(err))
 
   }
 
   onRouteChange = (route) => {
+    if(route === 'signout'){
+      this.setState({isSignedIn: false});
+    }else{
+      this.setState({isSignedIn: true});
+    }
     this.setState({route: route});
   }
 
@@ -84,18 +130,18 @@ class App extends Component {
         <Particles className="backgroundMove"
           params={particlesOption}
         />
-        <Navigation onRouteChange={this.onRouteChange}/>
+        <Navigation isSignedIn={this.isSignedIn} onRouteChange={this.onRouteChange}/>
         { this.state.route === 'home'
           ? <div>
             <Logo />
-            <Rank/>
+            <Rank name={this.state.user.name} imageInput={this.state.user.imageInput}/>
             <ImageURL oninputChange={this.oninputChange} onSubmit={this.onSubmit} />
             <ImageWithFace box={this.state.box} ImageWithFace={this.state.ImageWithFace}/>
           </div>
           :(
             this.state.route === 'signin'
-            ? <SignIn onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />
+            ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
           )
         }
       </div>
