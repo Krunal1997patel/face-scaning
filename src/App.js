@@ -40,7 +40,7 @@ const initialState = {
     id: '',
     name: '',
     email: '',
-    imageInput: 0,
+    imageinput: 0,
     joined: ''
   }
 }
@@ -57,14 +57,14 @@ class App extends Component {
         id: data.id,
         name: data.name,
         email: data.email,
-        imageInput: data.imageInput,
+        imageinput: data.imageinput,
         joined: data.joined,
       }
     })
   }
 
   componentDidMount() {
-    fetch('http://localhost:3001')
+    fetch('https://shrouded-bayou-57398.herokuapp.com')
       .then(response => response.json())
       //.then(console.log);
   }
@@ -99,7 +99,7 @@ class App extends Component {
         this.state.input)
       .then(response => {
         if(response){
-          fetch('http://localhost:3001/image', {
+          fetch('https://shrouded-bayou-57398.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -108,7 +108,7 @@ class App extends Component {
           })
           .then(response => response.json())
           .then(count => {
-            this.setState(Object.assign(this.state.user, {imageInput: count}))
+            this.setState(Object.assign(this.state.user, {imageinput: count}))
           })
           .catch(console.log)
         }
@@ -137,7 +137,7 @@ class App extends Component {
         { this.state.route === 'home'
           ? <div>
             <Logo />
-            <Rank name={this.state.user.name} imageInput={this.state.user.imageInput}/>
+            <Rank name={this.state.user.name} imageinput={this.state.user.imageinput}/>
             <ImageURL oninputChange={this.oninputChange} onSubmit={this.onSubmit} />
             <ImageWithFace box={this.state.box} ImageWithFace={this.state.ImageWithFace}/>
           </div>
